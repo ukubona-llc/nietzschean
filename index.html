@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recursion &amp; Sovereignty — Ukubona</title>
+
+<!-- Favicon: pentagram {5/2}. Each edge joins a vertex to the one two steps away (diagonals only); no pentagon outline, no circle. -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 6L75.86 85.6L8.15 36.4H91.85L24.14 85.6Z' fill='none' stroke='%23d98e04' stroke-width='8' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
+
+<!-- Apply saved / system theme before first paint -->
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('ukb-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') {
+      t = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+
+<!-- Paste in <head> -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$','$'],['\\(','\\)']],
+      displayMath: [['$$','$$'],['\\[','\\]']],
+      processEscapes: true
+    },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+  };
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<!-- Usage inline: $E = mc^2$ -->
+<!-- Usage block:  $$\int_0^\infty e^{-x} dx = 1$$ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #faf7f2;
+    --surface: #ffffff;
+    --ink: #1c1917;
+    --muted: #6b6560;
+    --rule: #e4ddd2;
+    --accent: #b97700;
+    --accent-soft: #f6e7c8;
+    --code: #f1ece3;
+    --shadow: 0 8px 28px rgba(28, 25, 23, .14);
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'DM Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  :root[data-theme="dark"] {
+    --bg: #14110f;
+    --surface: #1d1916;
+    --ink: #f0ebe3;
+    --muted: #a39b91;
+    --rule: #332d27;
+    --accent: #f0a81c;
+    --accent-soft: #3a2d12;
+    --code: #201b17;
+    --shadow: 0 8px 28px rgba(0, 0, 0, .55);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.72 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    transition: background .25s, color .25s;
+  }
+
+  /* ---------- Header (controls sit outside the content margins) ---------- */
+  .bar {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .logo { display: block; width: 40px; height: 40px; color: var(--accent); }
+  .logo svg { width: 100%; height: 100%; animation: spin 28s linear infinite; transform-origin: 50% 50%; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .logo svg { animation: none; } html { scroll-behavior: auto; } }
+
+  .ctrl { display: flex; align-items: center; gap: 6px; }
+  .iconbtn {
+    width: 40px; height: 40px;
+    display: grid; place-items: center;
+    background: transparent; color: var(--ink);
+    border: 1px solid transparent; border-radius: 10px;
+    cursor: pointer;
+  }
+  .iconbtn:hover, .iconbtn[aria-expanded="true"] { background: var(--accent-soft); border-color: var(--rule); }
+  .iconbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .iconbtn svg { width: 20px; height: 20px; }
+  #theme .moon { display: none; }
+  :root[data-theme="dark"] #theme .sun { display: none; }
+  :root[data-theme="dark"] #theme .moon { display: block; }
+
+  .waffle-wrap { position: relative; }
+  .waffle-dots { display: grid; grid-template-columns: repeat(3, 5px); gap: 3px; }
+  .waffle-dots i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; display: block; }
+  .waffle-menu {
+    position: absolute; right: 0; top: 48px;
+    width: 280px; padding: 12px;
+    background: var(--surface);
+    border: 1px solid var(--rule); border-radius: 14px;
+    box-shadow: var(--shadow);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+  }
+  .waffle-menu[hidden] { display: none; }
+  .waffle-menu a {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 10px 4px; border-radius: 10px;
+    color: var(--ink); text-decoration: none;
+    font-size: 12px; line-height: 1.25; text-align: center;
+  }
+  .waffle-menu a:hover, .waffle-menu a:focus-visible { background: var(--accent-soft); outline: none; }
+  .waffle-menu .tile {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: grid; place-items: center;
+    background: var(--accent-soft); color: var(--accent);
+    font: 500 15px var(--mono);
+  }
+
+  /* ---------- Content ---------- */
+  main { max-width: 46rem; margin: 0 auto; padding: 92px 22px 96px; }
+  h1, h2 { font-family: var(--serif); font-weight: 400; line-height: 1.15; }
+  h1 { font-size: clamp(2.1rem, 6vw, 3rem); margin: 0 0 .3em; }
+  h2 { font-size: 1.9rem; margin: 2.4em 0 .6em; padding-top: .6em; border-top: 1px solid var(--rule); }
+  h3 { font: 700 1.1rem/1.35 var(--sans); margin: 2em 0 .5em; }
+  p { margin: 0 0 1em; }
+  a { color: var(--accent); }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 2.2em 0; }
+  ul, ol { padding-left: 1.3em; margin: 0 0 1em; }
+  li { margin-bottom: .35em; }
+  code, pre { font-family: var(--mono); font-size: .86em; }
+
+  .lede { color: var(--muted); font-size: 1.05rem; }
+  .provenance {
+    margin: 1.4em 0 1.6em; padding: 14px 16px;
+    border: 1px solid var(--rule); border-left: 3px solid var(--accent);
+    border-radius: 8px; background: var(--surface);
+    font-size: .92rem; color: var(--muted);
+  }
+  .provenance strong { color: var(--ink); }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 1em; padding: 0; list-style: none; }
+  .toc a {
+    display: inline-block; padding: 4px 12px; border: 1px solid var(--rule); border-radius: 99px;
+    font-size: .85rem; text-decoration: none; color: var(--ink); background: var(--surface);
+  }
+  .toc a:hover { border-color: var(--accent); color: var(--accent); }
+
+  .attrib {
+    display: inline-block; margin: 0 0 .4em;
+    font: 500 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .stagename { font-weight: 700; font-size: 1.08rem; margin-bottom: .2em; }
+  h3 + .stagename { margin-top: -.2em; }
+  .step { margin-bottom: .1em; font-weight: 700; }
+  .step + p { color: var(--muted); }
+  .prompt {
+    margin: 2em 0; padding: 14px 18px; border-radius: 10px;
+    background: var(--accent-soft); border: 1px solid var(--rule);
+  }
+  .prompt p:last-child { margin-bottom: 0; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; vertical-align: middle;
+    margin-left: 6px; padding: 1px 9px 1px 6px;
+    border: 1px solid var(--rule); border-radius: 99px; background: var(--surface);
+    font-size: .72rem; line-height: 1.6; color: var(--muted); white-space: nowrap;
+  }
+  .chip img { width: 14px; height: 14px; border-radius: 3px; }
+  .chipline { display: block; margin: -.4em 0 1.1em; }
+
+  /* tables */
+  .tablewrap { overflow-x: auto; margin: 1.2em 0 1.6em; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; line-height: 1.5; }
+  th, td { padding: 9px 13px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
+  th { font: 500 .74rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--code); }
+  tr:last-child td { border-bottom: 0; }
+  td:first-child { font-weight: 700; white-space: nowrap; }
+
+  /* figures */
+  figure { margin: 2em 0; padding: 18px 16px 14px; border: 1px dashed var(--rule); border-radius: 12px; background: var(--surface); }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { margin-top: 10px; font-size: .84rem; color: var(--muted); }
+  figcaption b { font: 500 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-right: 6px; }
+  .addedtag { font: 500 .7rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  .tablecap { margin: 2em 0 -.6em; font-size: .84rem; color: var(--muted); }
+  .tablecap b { font: 500 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-right: 6px; }
+
+  svg .ink    { stroke: var(--ink); fill: none; }
+  svg .amber  { stroke: var(--accent); fill: none; }
+  svg .box    { fill: var(--bg); stroke: var(--ink); stroke-width: 1.3; }
+  svg .boxA   { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+  svg text    { fill: var(--ink); font-family: var(--sans); font-size: 12.5px; }
+  svg .t-b    { font-weight: 700; }
+  svg .t-m    { fill: var(--muted); font-size: 11px; }
+  svg .t-a    { fill: var(--accent); font-weight: 700; }
+
+  pre {
+    margin: 1.2em 0 .4em; padding: 14px 16px; overflow-x: auto;
+    background: var(--code); border: 1px solid var(--rule); border-radius: 10px; line-height: 1.55;
+  }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card { padding: 14px 16px; border: 1px solid var(--rule); border-radius: 10px; background: var(--bg); font-size: .9rem; line-height: 1.55; }
+  .card h4 { margin: 0 0 .5em; font: 500 .74rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+  .card.closed h4 { color: var(--muted); }
+  .card.open { border-color: var(--accent); background: var(--accent-soft); }
+  .card.open h4 { color: var(--accent); }
+  .card ul { margin: 0; padding-left: 1.1em; }
+  @media (max-width: 560px) { .compare { grid-template-columns: 1fr; } }
+
+  footer { margin-top: 4em; padding-top: 1.4em; border-top: 1px solid var(--rule); font-size: .84rem; color: var(--muted); }
+</style>
+</head>
+
+<body id="top">
+
+<header class="bar">
+  <!-- 2) rotating logo, top-left, outside the content margins: a pentagram {5/2} -->
+  <a class="logo" href="#top" aria-label="Ukubona — back to top">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M50 6L75.86 85.6L8.15 36.4H91.85L24.14 85.6Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+  </a>
+
+  <div class="ctrl">
+    <!-- 4) app-waffle, next to the toggle -->
+    <div class="waffle-wrap">
+      <button class="iconbtn" id="waffle" type="button" aria-label="Apps" aria-haspopup="true" aria-expanded="false" aria-controls="waffle-menu">
+        <span class="waffle-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      </button>
+      <nav class="waffle-menu" id="waffle-menu" aria-label="Ukubona apps" hidden>
+        <!-- Edit hrefs here. Only the first two are known URLs; the rest are placeholders. -->
+        <a href="https://ukubona-llc.github.io/"><span class="tile">U</span>Ukubona</a>
+        <a href="https://ukubona-llc.github.io/self-criticism/"><span class="tile">H</span>Hellenism &amp; Pessimism</a>
+        <a href="#top"><span class="tile">V</span>This page</a>
+        <a href="#"><span class="tile">C</span>Clinical Twin</a>
+        <a href="#"><span class="tile">W</span>Waste Twin</a>
+        <a href="#"><span class="tile">S</span>Dr. K's School</a>
+        <a href="#"><span class="tile">R</span>ResonanceMax</a>
+        <a href="#"><span class="tile">A</span>Avodah</a>
+        <a href="#"><span class="tile">+</span>More</a>
+      </nav>
+    </div>
+
+    <!-- 3) light / dark toggle, top-right, outside the content margins -->
+    <button class="iconbtn" id="theme" type="button" aria-label="Toggle light / dark theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+      </svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <h1>Recursion &amp; Sovereignty</h1>
+  <p class="lede">The pentad as evolutionary theory of agency, reproduction and succession — and why the Greeks stopped at the Olympians.</p>
+
+  <div class="provenance">
+    <strong>Provenance.</strong> The text below is transcribed verbatim from <code>index.md</code>, attributed to its three voices:
+    <strong>§1 GPT</strong> (including the intervening prompt from Ukubona), <strong>§2 Claude</strong>, <strong>§3 Gemini</strong>.
+    Items marked <span class="addedtag">Added</span> (figures and tables) are supplementary and are not part of the source text.
+    The inline source chips are kept as they appeared in the GPT text.
+  </div>
+
+  <ul class="toc">
+    <li><a href="#gpt">1 · GPT</a></li>
+    <li><a href="#claude">2 · Claude</a></li>
+    <li><a href="#gemini">3 · Gemini</a></li>
+    <li><a href="#synthesis">Added · Synthesis</a></li>
+  </ul>
+
+  <!-- ===================================================== 1. GPT -->
+  <h2 id="gpt">1. GPT</h2>
+  <span class="attrib">GPT</span>
+
+  <p>Now the architecture becomes more consequential. You're moving from an epistemology of scientific knowledge to an evolutionary theory of agency, reproduction, and sovereignty.</p>
+
+  <p>The crucial change is that your units are no longer merely observations and hypotheses. They are principles, brokers, agents, and offspring. And by Stage V, the question is no longer just which hypothesis survives. It is: who gets to determine what survives, according to which principles, and in whose interests?</p>
+
+  <h3>The pentad, reconstructed</h3>
+
+  <h3>I</h3>
+  <p class="stagename">Principleᵢ / Engine</p>
+  <p>The generative source: the principle, productive process, or inherited structure that makes a class of outcomes possible. The engine does not need to be conscious or intentional.</p>
+
+  <h3>II</h3>
+  <p class="stagename">Brokerᵢⱼ / Sample</p>
+  <p>The mediation layer. A broker selects, translates, packages, and transmits some representation of the engine to agents. It cannot transmit everything; its choices shape what becomes available for action.</p>
+
+  <h3>III</h3>
+  <p class="stagename">Agentᵢⱼₖ &amp; Gametesᵢⱼₖ / Variation</p>
+  <p>Agents act upon representations, generate outcomes, and reproduce patterns. Gametes introduce a biological analogy: inheritance need not mean exact copying. Variation enters the lineage, creating possibilities that did not exist in the parent configuration.</p>
+
+  <h3>IV</h3>
+  <p class="stagename">Within- and between-system collision</p>
+  <p>Principles encounter principles; agents encounter agents; offspring encounter inherited constraints and competing offspring. Cooperation, competition, recombination, and conflict determine which configurations remain viable.</p>
+
+  <h3>V</h3>
+  <p class="stagename">Next generation / Filter</p>
+  <p>The surviving configuration becomes the initial condition for another round. But the filter itself becomes an object of inquiry: Who is the principal? Which principles govern selection? Who defines fitness, legitimacy, and success?</p>
+
+  <figure>
+    <svg viewBox="0 0 560 370" role="img" aria-label="Pentad drawn as a pentagram: five stages at the vertices, joined by diagonals only, with a recursion arrow from V back to I-prime.">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0L10 5L0 10z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+      <path d="M280 60L350.53 277.08L165.87 142.92H394.13L209.47 277.08Z" class="ink" stroke-width="1.6" stroke-linejoin="round" opacity=".6"/>
+      <g fill="var(--accent)">
+        <circle cx="280" cy="60" r="7"/><circle cx="394.13" cy="142.92" r="7"/><circle cx="350.53" cy="277.08" r="7"/>
+        <circle cx="209.47" cy="277.08" r="7"/><circle cx="165.87" cy="142.92" r="7"/>
+      </g>
+      <text x="280" y="28" text-anchor="middle" class="t-a" font-size="15">I</text>
+      <text x="280" y="43" text-anchor="middle" class="t-m">Principle / Engine</text>
+      <text x="410" y="138" class="t-a" font-size="15">II</text>
+      <text x="410" y="154" class="t-m">Broker / Sample</text>
+      <text x="350" y="304" text-anchor="middle" class="t-a" font-size="15">III</text>
+      <text x="350" y="319" text-anchor="middle" class="t-m">Agent · Gamete</text>
+      <text x="350" y="332" text-anchor="middle" class="t-m">Variation</text>
+      <text x="209" y="304" text-anchor="middle" class="t-a" font-size="15">IV</text>
+      <text x="209" y="319" text-anchor="middle" class="t-m">Collision</text>
+      <text x="152" y="138" text-anchor="end" class="t-a" font-size="15">V</text>
+      <text x="152" y="154" text-anchor="end" class="t-m">Filter /</text>
+      <text x="152" y="167" text-anchor="end" class="t-m">Next generation</text>
+      <path d="M160 130C118 78 170 40 224 52" class="amber" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+      <text x="70" y="76" class="t-a">I′</text>
+      <text x="70" y="90" class="t-m">changed engine,</text>
+      <text x="70" y="103" class="t-m">not a blank slate</text>
+    </svg>
+    <figcaption><b>Added · Fig. 1</b>The pentad as a pentagram. Every edge is a diagonal (I–III–V–II–IV–I): no stage is joined to its neighbour, and nothing encloses the star. The perimeter order is the sequence; the diagonals are the relations the sequence hides. The dashed arrow is the recursion V → I′.</figcaption>
+  </figure>
+
+  <h3>The decisive move: the filter is not neutral</h3>
+
+  <p>Your parenthetical — “Who is the Principal? What Principles? God is Dead!” — is doing more work than it first appears to.</p>
+
+  <p>In a conventional principal-agent model, the principal supplies the objective and the agent executes it, subject to information asymmetry, incentive problems, and monitoring costs. But your recursion destabilizes that arrangement.</p>
+
+  <p>The principal may itself be an offspring of an earlier generation. Its principles may be inherited rather than chosen. Its broker may control what information reaches it. And its agents may generate descendants whose behavior transforms the very objectives they were meant to serve.</p>
+
+  <p>So the recursion becomes:</p>
+
+  <p class="step">I. Principle / Engine</p>
+  <p>What generates the possibility space?</p>
+
+  <p class="step">II. Broker / Sample</p>
+  <p>What becomes representable and transmissible?</p>
+
+  <p class="step">III. Agents / Gametes / Variation</p>
+  <p>What acts, reproduces, mutates, and recombines?</p>
+
+  <p class="step">IV. Collision</p>
+  <p>What competes, cooperates, and encounters constraints?</p>
+
+  <p class="step">V. Filter / Next Generation</p>
+  <p>What survives, who selects, and by what criterion?</p>
+
+  <p class="step">I′. The inherited principle, transformed</p>
+  <p>The next generation begins with a changed engine, not a blank slate.</p>
+
+  <h3>Why Nietzsche belongs at V</h3>
+
+  <p>“God is dead” is not simply the assertion that there is no God. In Nietzsche's philosophical context, it names the historical collapse of the authority of the inherited Christian-metaphysical framework that had supplied Europe with an overarching source of truth, value, and purpose.</p>
+
+  <p>Your framework pushes that problem into an operational question:</p>
+
+  <p>If no universally acknowledged external authority settles the principles of selection, who or what now determines the filter?</p>
+
+  <p>Consider five possibilities:</p>
+
+  <ul>
+    <li>Biology: differential survival and reproduction.</li>
+    <li>Markets: purchasing, investment, and resource allocation.</li>
+    <li>Institutions: law, professional standards, and political authority.</li>
+    <li>Algorithms: objectives, training distributions, reward functions, and deployment rules.</li>
+    <li>Civilization: the contested inheritance of values across generations.</li>
+  </ul>
+
+  <p>These filters are not interchangeable. Biological fitness is not moral worth; market success is not social welfare; institutional legitimacy is not necessarily truth; and an algorithm's reward is not necessarily its principal's long-term interest.</p>
+
+  <p>The problem is that each filter can produce its own apparent justification. Whatever survives can begin to look as though it deserved to survive.</p>
+
+  <p>That is precisely where your graveyard matters.</p>
+
+  <p class="tablecap"><b>Added · Table A</b>The five filters and the gap each one hides</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Filter</th><th>What it selects for</th><th>What it is mistaken for</th></tr></thead>
+      <tbody>
+        <tr><td>Biology</td><td>Differential survival and reproduction</td><td>Moral worth</td></tr>
+        <tr><td>Markets</td><td>Purchasing, investment, resource allocation</td><td>Social welfare</td></tr>
+        <tr><td>Institutions</td><td>Law, professional standards, political authority</td><td>Truth</td></tr>
+        <tr><td>Algorithms</td><td>Objectives, training distributions, reward functions</td><td>The principal's long-term interest</td></tr>
+        <tr><td>Civilization</td><td>Contested inheritance of values</td><td>Whatever the last generation won</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>The deeper implication for Ukubona</h3>
+
+  <p>Your indexing is suggestive:</p>
+
+  <ul>
+    <li>\(i\): principle.</li>
+    <li>\(ij\): broker.</li>
+    <li>\(ijk\): agent and gamete.</li>
+  </ul>
+
+  <figure>
+    <svg viewBox="0 0 560 250" role="img" aria-label="Nested boxes: principle i contains broker ij, which contains agent and gamete ijk.">
+      <rect x="10" y="10" width="540" height="230" rx="16" class="box"/>
+      <text x="28" y="36" class="t-a">i</text><text x="46" y="36" class="t-b">Principle / Engine</text>
+      <text x="540" y="36" text-anchor="end" class="t-m">generates the possibility space</text>
+      <rect x="40" y="56" width="480" height="164" rx="14" class="boxA"/>
+      <text x="58" y="82" class="t-a">ij</text><text x="82" y="82" class="t-b">Broker / Sample</text>
+      <text x="508" y="82" text-anchor="end" class="t-m">selects, translates, transmits</text>
+      <rect x="72" y="100" width="416" height="96" rx="12" class="box"/>
+      <text x="90" y="126" class="t-a">ijk</text><text x="120" y="126" class="t-b">Agent &amp; Gamete / Variation</text>
+      <text x="476" y="126" text-anchor="end" class="t-m">acts, reproduces, varies</text>
+      <text x="280" y="164" text-anchor="middle" class="t-m">outputs collide (IV) → survivors pass the filter (V) → i′</text>
+    </svg>
+    <figcaption><b>Added · Fig. 2</b>The expanding indices read as nesting: each layer inherits the constraints of the layer that contains it.</figcaption>
+  </figure>
+
+  <p>The expanding indices imply a nested architecture of inheritance and mediation. Principles generate contexts; brokers mediate those contexts; agents act within them and produce new configurations. Those configurations collide, and the survivors enter the next generation.</p>
+
+  <p>But the most consequential property is that the filter can reproduce itself.</p>
+
+  <p>A principal can select agents who reinforce its own authority. Those agents can produce offspring that inherit the principal's assumptions. The resulting population then appears to validate the very principles that shaped its selection.</p>
+
+  <p>That is a recursive legitimacy problem: selection creates the evidence subsequently invoked to justify selection.</p>
+
+  <figure>
+    <svg viewBox="0 0 560 260" role="img" aria-label="Loop: filter selects agents, agents yield survivors, survivors appear to justify the filter.">
+      <defs>
+        <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0L10 5L0 10z" fill="var(--ink)"/>
+        </marker>
+      </defs>
+      <rect x="20" y="105" width="130" height="50" rx="10" class="boxA"/>
+      <text x="85" y="135" text-anchor="middle" class="t-b">Filter</text>
+      <rect x="215" y="20" width="130" height="50" rx="10" class="box"/>
+      <text x="280" y="42" text-anchor="middle" class="t-b">Selected agents</text>
+      <text x="280" y="58" text-anchor="middle" class="t-m">who reinforce it</text>
+      <rect x="410" y="105" width="130" height="50" rx="10" class="box"/>
+      <text x="475" y="127" text-anchor="middle" class="t-b">Survivors</text>
+      <text x="475" y="143" text-anchor="middle" class="t-m">inherit its assumptions</text>
+      <rect x="215" y="190" width="130" height="50" rx="10" class="box"/>
+      <text x="280" y="212" text-anchor="middle" class="t-b">“Evidence”</text>
+      <text x="280" y="228" text-anchor="middle" class="t-m">they seem to deserve it</text>
+      <path d="M130 105L220 65" class="ink" marker-end="url(#ah2)"/>
+      <path d="M340 65L430 105" class="ink" marker-end="url(#ah2)"/>
+      <path d="M430 155L340 195" class="ink" marker-end="url(#ah2)"/>
+      <path d="M220 195L130 155" class="ink" marker-end="url(#ah2)"/>
+      <text x="280" y="135" text-anchor="middle" class="t-m">selection creates the evidence</text>
+      <text x="280" y="149" text-anchor="middle" class="t-m">invoked to justify selection</text>
+    </svg>
+    <figcaption><b>Added · Fig. 3</b>The recursive legitimacy problem as a closed loop. Provenance (below) is what lets an outside reader break it.</figcaption>
+  </figure>
+
+  <p>A sovereign intelligence system should therefore preserve not only outcomes but also provenance: which principal supplied the objective, which broker selected the evidence, which agent acted, which alternatives were excluded, and which filter determined survival.</p>
+
+  <p>Otherwise, the system can confuse the winners of a process with the rightful authors of its principles.</p>
+
+  <p>One qualification to the architecture: gametes are a particularly powerful metaphor for biological inheritance and recombination, but cultural, institutional, and computational offspring transmit information through different mechanisms. The pentad can unify their structural relationships without assuming that their underlying causal processes are identical.</p>
+
+  <p>My central reading: Stage V is not merely natural selection. It is the point at which evolution becomes a problem of governance. The question is no longer only which agents survive under a given principle. It is whether the next generation inherits that principle, changes it, or replaces it — and who has the authority to decide.</p>
+
+  <p>That makes your recursion more than Darwinian. It is Darwinian evolution joined to the principal-agent problem and Nietzsche's crisis of inherited values.</p>
+
+  <p>The next generation inherits both the survivors and the unresolved question of who gets to choose them.</p>
+
+  <hr>
+
+  <div class="prompt">
+    <span class="attrib">Prompt · Ukubona</span>
+    <p>Isn't this what <a href="https://ukubona-llc.github.io/self-criticism/">Hellenism &amp; Pessimism</a> fails to say: theogony and each generation of Gods! why did the greeks terminate the recursion at cycle 3 with the olympians?</p>
+  </div>
+
+  <span class="attrib">GPT</span>
+
+  <p>I think you've put your finger on a genuine tension between Greek cosmogony and the evolutionary recursion you're constructing. But I'd sharpen the historical claim: the Greeks did not simply terminate recursion at the Olympians. They established a new regime of sovereignty there, while their own myths continued to preserve older powers, unresolved succession, and the possibility of further transformation.</p>
+
+  <p>Your question is more interesting than asking why Zeus won. It is: why does a mythology that begins by generating successive generations of gods eventually treat one generation as the established order, rather than making the succession principle itself permanently recursive?</p>
+
+  <h3>1. Theogony is already your pentad in motion</h3>
+
+  <p>Hesiod's Theogony does not begin with an eternal, fully constituted Olympian order. It narrates the emergence of a cosmos and the succession of powers.</p>
+
+  <p>The succession is explicit: Ouranos is displaced by Kronos; Kronos by Zeus; Zeus establishes the Olympian order. Hesiod's poem presents Zeus as the victor who assigns the gods their honors and organizes their respective domains. <span class="chip"><img src="https://www.google.com/s2/favicons?domain=https://academic.oup.com&amp;sz=32" alt="">Oxford Academic +2</span></p>
+
+  <p>But the third generation has a distinctive problem. Zeus knows the succession principle because he has inherited its history. He knows that the father who produces a successor may also produce his own replacement.</p>
+
+  <p>His solution is not simply to defeat the next generation. It is to transform the conditions under which succession can occur.</p>
+
+  <h3>The critical episode: Zeus swallows Metis</h3>
+
+  <p>Metis, associated with cunning intelligence, is prophesied to bear a daughter and then a son who would rule over gods and men. Zeus swallows Metis while she is pregnant with Athena. Athena subsequently emerges from Zeus's head, fully armed.</p>
+
+  <p>The symbolic operation is extraordinary: Zeus internalizes the very intelligence that might have enabled a successor to overthrow him. Athena's birth allows a powerful new divine generation to emerge without reproducing the predicted succession in its original form. <span class="chip"><img src="https://www.google.com/s2/favicons?domain=https://books.openedition.org&amp;sz=32" alt="">books.openedition.org +1</span></p>
+
+  <p>Read through your pentad:</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Stage</th><th>Hesiodic succession</th></tr></thead>
+      <tbody>
+        <tr><td>I. Principle / Engine</td><td>Generative cosmic powers</td></tr>
+        <tr><td>II. Broker / Sample</td><td>Genealogy, prophecy, inherited knowledge</td></tr>
+        <tr><td>III. Agent / Variation</td><td>Offspring who can become successors</td></tr>
+        <tr><td>IV. Collision</td><td>Father, mother, child, and rival powers</td></tr>
+        <tr><td>V. Filter</td><td>Zeus's consolidation of sovereignty</td></tr>
+        <tr><td>I′. New engine</td><td>Olympian order, with Zeus's authority reproduced</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The fifth stage does not eliminate reproduction. It changes the rules under which reproduction can threaten sovereignty.</p>
+
+  <p>That is the real distinction between Zeus and his predecessors.</p>
+
+  <h3>So why stop at Zeus?</h3>
+
+  <p>I see three answers, at different explanatory levels.</p>
+
+  <p>1. The political answer: the succession myth needs a legitimate order.</p>
+
+  <p>A myth about the origin of everything cannot remain indefinitely in the phase of explaining why every ruler is overthrown. Hesiod's poem must also explain why the present arrangement of divine powers exists. Zeus's victory supplies that explanation: the current distribution of cosmic authority has a history, and the history culminates in a ruler capable of maintaining order. <span class="chip"><img src="https://www.google.com/s2/favicons?domain=https://onlinelibrary.wiley.com&amp;sz=32" alt="">Wiley Online Library +1</span></p>
+
+  <p>2. The psychological answer: the third generation incorporates the lesson of the first two.</p>
+
+  <p>Ouranos suppresses his offspring. Kronos swallows his offspring. Zeus goes further: he incorporates Metis, the intelligence that makes him capable of anticipating succession. The mechanism evolves from suppression to ingestion to a more sophisticated form of control.</p>
+
+  <p>This is your evolutionary insight. The survivor does not merely defeat the previous generation. It inherits the information generated by previous failures.</p>
+
+  <p>3. The theological answer: the Olympian settlement converts an event into an institution.</p>
+
+  <p>Zeus's victory is an event. Olympian sovereignty is an arrangement intended to endure. The myth converts a contingent victory into an apparently stable cosmic order.</p>
+
+  <p>But this is where your question becomes uncomfortable: does the victor's capacity to establish an order prove that the order is legitimate? Or does it merely explain why the victor's principles became authoritative?</p>
+
+  <p>Those are entirely different propositions.</p>
+
+  <h3>Hellenism and pessimism: the recursion never really ends</h3>
+
+  <p>If by Hellenism and Pessimism you mean the Nietzschean problem of Greek culture confronting suffering, destruction, and the instability of existence, I would make a distinction between the closure of the succession narrative and the closure of Greek myth itself.</p>
+
+  <p>The former occurs. The latter does not.</p>
+
+  <p>Even within Hesiod, Gaia subsequently produces Typhoeus, compelling Zeus to confront another threat. Later Greek literature continues to explore divine conflict, human defiance, tragic inheritance, and the limits of authority. Scholarship also identifies traditions in which Zeus's own sovereignty remains vulnerable. <span class="chip"><img src="https://www.google.com/s2/favicons?domain=https://www.cambridge.org&amp;sz=32" alt="">Cambridge Core +1</span></p>
+
+  <p>The Olympians therefore represent a settlement, not the demonstrated end of all possible succession.</p>
+
+  <p>And here I think your invocation of Nietzsche is exactly right. The Olympian order offers a way to inhabit a world of conflict by organizing it under divine authority. But the order cannot make the underlying generative and destructive forces disappear. It can only arrange their relations, distribute their powers, and narrate their legitimacy.</p>
+
+  <p>Your Stage V asks what happens when the authority that established the filter is itself subject to historical change.</p>
+
+  <p>The Greeks did not collectively provide one final answer. Their myths preserve competing answers, and tragedy repeatedly tests the distance between divine order and human experience.</p>
+
+  <p>My conclusion: Zeus is not the end of recursion. He is the first ruler in this succession narrative who appears to have learned how to govern recursion itself. His solution is to incorporate intelligence, redistribute authority, and stabilize the conditions of succession. Whether that stability is permanent is a different question.</p>
+
+  <p>And that gives your pentad its most important political implication:</p>
+
+  <p>Every generation inherits not only an engine, but also the filter that determines which engines may follow it. Sovereignty becomes dangerous when the incumbent can reproduce the filter while preventing the next generation from questioning it.</p>
+
+  <!-- ===================================================== 2. CLAUDE -->
+  <h2 id="claude">2. Claude</h2>
+  <span class="attrib">Claude</span>
+
+  <p>I'd say the architecture is strong, the Greek answer is good but a bit flattering, and a few sharper points are missing. (I haven't opened your <em>Hellenism &amp; Pessimism</em> page, so I'm responding only to what's pasted.)</p>
+
+  <p>The core move holds up: the filter is not neutral, and survivors can't be read as deserving survivors. I'd anchor it in Nietzsche's <em>Genealogy</em> more than in "God is dead," since the Genealogy is where he shows how a value's origin gets laundered by its success. The provenance point is also the right engineering conclusion.</p>
+
+  <p><strong>On "why stop at cycle three?"</strong> I'd resist the premise a little. Three sovereigns is the narrator's present, not necessarily a decision. Every genealogy ends where the teller stands, so the last generation is always "now." The pattern is also not uniquely Greek. The Hurrian-Hittite succession myth (Kumarbi, Teshub) has the same swallowing and the same storm-god victor, so Hesiod probably inherited the template. And the Greeks did extend it. In the Orphic tradition, Zeus swallows the first-born god and recreates the cosmos, and Dionysus is designated his heir, then torn apart by Titans. The sources are late and fragmentary, but they show the recursion was reopened.</p>
+
+  <p><strong>Gaia is the constant principal.</strong> In your pentad she is arguably Stage I. She is the engine behind every coup: she arms Kronos against Ouranos, shelters the infant Zeus, and, with Ouranos, advises Zeus to swallow Metis so no rival gets kingship. The gods rotate as agents. Zeus's real innovation is to turn the engine into an advisor and to marry or absorb the powers that could generate a rival (Metis, Themis). So the settlement incorporates the mutation source rather than eliminating it.</p>
+
+  <figure>
+    <svg viewBox="0 0 560 300" role="img" aria-label="Three successive rulers on top, Gaia as the constant principal beneath, with dashed lines to each succession event.">
+      <defs>
+        <marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0L10 5L0 10z" fill="var(--ink)"/>
+        </marker>
+        <marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0L10 5L0 10z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+      <text x="30" y="26" class="t-m">agents rotate (III)</text>
+      <rect x="30" y="40" width="120" height="50" rx="10" class="box"/><text x="90" y="70" text-anchor="middle" class="t-b">Ouranos</text>
+      <rect x="220" y="40" width="120" height="50" rx="10" class="box"/><text x="280" y="70" text-anchor="middle" class="t-b">Kronos</text>
+      <rect x="410" y="40" width="120" height="50" rx="10" class="box"/><text x="470" y="70" text-anchor="middle" class="t-b">Zeus</text>
+      <path d="M152 65H216" class="ink" marker-end="url(#ah3)"/>
+      <path d="M342 65H406" class="ink" marker-end="url(#ah3)"/>
+      <text x="185" y="56" text-anchor="middle" class="t-m">displaced</text>
+      <text x="375" y="56" text-anchor="middle" class="t-m">displaced</text>
+      <path d="M185 218V72" class="amber" stroke-dasharray="5 4" marker-end="url(#ah4)"/>
+      <path d="M375 218V72" class="amber" stroke-dasharray="5 4" marker-end="url(#ah4)"/>
+      <path d="M470 218V94" class="amber" stroke-dasharray="5 4" marker-end="url(#ah4)"/>
+      <text x="179" y="150" text-anchor="end" class="t-m">arms Kronos</text>
+      <text x="369" y="150" text-anchor="end" class="t-m">shelters infant Zeus</text>
+      <text x="476" y="146" class="t-m">advises:</text>
+      <text x="476" y="160" class="t-m">swallow Metis</text>
+      <rect x="30" y="220" width="500" height="56" rx="12" class="boxA"/>
+      <text x="280" y="244" text-anchor="middle" class="t-b">Gaia — the constant principal (Stage I)</text>
+      <text x="280" y="262" text-anchor="middle" class="t-m">the engine behind every coup; absorbed, not eliminated, by the settlement</text>
+    </svg>
+    <figcaption><b>Added · Fig. 4</b>The rulers are the rotating variable; Gaia is the invariant. Read this way, Zeus's innovation is to move the generator of rivals inside the governing structure.</figcaption>
+  </figure>
+
+  <p><strong>The broker is born of the filter.</strong> The Muses who authorize Hesiod's song are Zeus's daughters, and they say they know how to tell falsehoods that sound like truths. That is your recursive legitimacy problem in miniature. The record of the succession is produced by the winner's lineage. I think this is the strongest addition to your Stage II/V link.</p>
+
+  <p><strong>The Nietzschean answer is concealment, not termination.</strong> In <em>The Birth of Tragedy</em>, the Olympians are an Apollonian veil over a Titanic substrate of terror and the Silenus wisdom that it is best never to have been born. The recursion continues underneath, which is why a "Hellenism and Pessimism" essay needs the theogony: pessimism is the Titanic layer the Olympians sublimate. <em>Homer's Contest</em> adds a counterweight. Greek culture institutionalized contest (ostracism, the "good Eris") precisely to prevent any single winner from closing the filter. Zeus as tyrant and the polis as anti-tyrant pull in opposite directions.</p>
+
+  <p><strong>Where the earlier answer overreaches.</strong> Saying Zeus "inherits the information from previous failures" is Lamarckian in framing. It's a narrative of learning, not selection. The Thetis episode is better evidence of the filter acting on reproduction: Zeus learns that her son would surpass his father, so he steers her to a mortal husband, and Achilles is the result. And the "political / psychological / theological" triad is loose; the three overlap more than the table suggests.</p>
+
+  <p><strong>For Ukubona,</strong> this suggests a concrete schema change: each NDJSON record should carry not just the outcome but the filter version that selected it and the alternatives excluded, and the broker's lineage should be logged as separately as the agent's. The graveyard then becomes queryable rather than metaphorical.</p>
+
+  <p>Do you want me to draft the theogony section as an addition to the essay, with the Gaia/Muses/Orphic points worked in?</p>
+
+  <figure>
+    <pre><code>{"gen":3,"principal":"zeus","principle_v":"olympian-1","broker":"muses","agent":"athena","variant":"born-armed","collision":["metis-prophecy"],"filter_v":"swallow-metis","selected":true,"excluded":["metis-son"],"parent_id":"gen2-kronos"}
+{"gen":3,"principal":"zeus","principle_v":"olympian-1","broker":"muses","agent":"metis-son","variant":"prophesied-successor","collision":["metis-prophecy"],"filter_v":"swallow-metis","selected":false,"status":"graveyard","parent_id":"gen2-kronos"}</code></pre>
+    <figcaption><b>Added · Fig. 5</b>An illustrative append-only record for the schema change proposed above: each line carries the filter version and the broker's lineage, and the excluded alternative is kept as its own line rather than deleted. Field names are a sketch, not a spec.</figcaption>
+  </figure>
+
+  <!-- ===================================================== 3. GEMINI -->
+  <h2 id="gemini">3. Gemini</h2>
+  <span class="attrib">Gemini</span>
+
+  <p>Both GPT and Claude map out the structural mechanics of the pentad and the historical mythology of theogony with high fidelity, but they leave open a critical question: <strong>Why is truncating recursion the fundamental hazard of sovereignty?</strong></p>
+
+  <p>To push this to the next level of architectural and philosophical rigor—particularly for an engine like Ukubona that models recursive decision-making and data routing—we have to examine what happens when a system successfully freezes its own succession.</p>
+
+  <hr>
+
+  <h3>1. The Thermodynamic Necessity of Truncation</h3>
+
+  <p>Why did the Greeks (and every other state or system) "stop at cycle three"?</p>
+
+  <p>From a cybernetic standpoint, <strong>infinite recursion is operationally lethal.</strong> A system cannot execute agency if its first principles are perpetually on the ballot. Every generation of theogony—Ouranos suppressing variance, Kronos consuming it—represents a crisis of systemic bandwidth.</p>
+
+  <p>Zeus does not merely win; he introduces <strong>compression and caching</strong>. By swallowing Metis (cunning intelligence) and generating Athena from his head, Zeus performs the ultimate act of state architecture: he internalizes the generator of future disruption and converts an open-ended evolutionary cascade into a closed, manageable control plane.</p>
+
+  <p>The Olympian settlement is the moment the engine stops mutating its source code and starts running a compiled binary.</p>
+
+  <hr>
+
+  <h3>2. Gaia vs. Zeus: The Open Reservoir vs. the Closed Control Plane</h3>
+
+  <p>Claude correctly identifies Gaia as the persistent Stage I engine behind every coup, but we can sharpen the structural distinction:</p>
+
+  <ul>
+    <li><strong>Gaia is the stochastic environment</strong>—the raw, un-neutered reservoir of variation, tectonic instability, and unmanaged input (Stage I/IV).</li>
+    <li><strong>Zeus is the executive loop</strong>—the deterministic filter trying to establish homeostatic equilibrium (Stage V).</li>
+  </ul>
+
+  <p>When Zeus institutionalizes his order, he attempts to make the filter appear as though it were the original engine. This is the exact flaw GPT identifies: <em>the recursive legitimacy problem</em>, where selection creates the very evidence subsequently invoked to justify its own necessity.</p>
+
+  <p>In machine learning and control theory, this is what happens when a policy network uses its own generated trajectories as its training distribution without out-of-distribution correction: it hallucinates its own inevitability.</p>
+
+  <hr>
+
+  <h3>3. The Olympian Trap in System Architecture</h3>
+
+  <p>If we translate this directly into software engineering and statecraft, the "Olympian settlement" is the default failure mode of any governance or intelligence platform:</p>
+
+  <ol>
+    <li><strong>The Sanitization of Provenance:</strong> The winning agent rewrites the audit logs so that its current rules look mathematically pristine rather than historically contingent.</li>
+    <li><strong>The Burial of the Graveyard:</strong> Alternatives, failed experiments, and discarded hypotheses (the Titanic substrate beneath the Apollonian veil) are purged to maintain the illusion of seamless coherence.</li>
+    <li><strong>The Stranglehold of the Filter:</strong> The current filter ensures that only offspring who inherit its explicit biases can pass into the next generation.</li>
+  </ol>
+
+  <hr>
+
+  <h3>4. The Ukubona Antidote: Designing Against the Olympian Settlement</h3>
+
+  <p>This is where the pentad ceases to be merely a literary or mythological critique and becomes an engineering specification. To prevent an intelligence system or a institutional framework from falling into the Olympian trap, the architecture must institutionalize what Greek myth suppressed: <strong>an auditable, queryable graveyard.</strong></p>
+
+  <ul>
+    <li><strong>Immutable Provenance Graphs:</strong> Every output must preserve its lineage—not just recording <em>what</em> decision was made, but which principal supplied the objective, which broker filtered the inputs, and which alternatives were explicitly pruned.</li>
+    <li><strong>Append-Only NDJSON State Tracking:</strong> By retaining every discarded hypothesis and dead branch in an append-only log, the system prevents the current filter from editing its own history.</li>
+    <li><strong>Preserving the Titanic Substrate:</strong> An intelligent routing architecture must maintain a mechanism for introducing high-variance "mutations" (or adversarial inputs) that can challenge the incumbent filter, ensuring that Stage V never permanently locks out Stage I.</li>
+  </ul>
+
+  <p>The Greeks stopped at Zeus because human political survival required a stable baseline myth to organize society. But an artificial or cognitive architecture designed to avoid historical decay cannot afford that luxury. It must keep the succession loop open.</p>
+
+  <figure>
+    <div class="compare">
+      <div class="card closed">
+        <h4>Olympian settlement · closed</h4>
+        <ul>
+          <li>Provenance: rewritten by the winner</li>
+          <li>Alternatives: purged</li>
+          <li>Mutation source: absorbed (Metis, Themis)</li>
+          <li>Filter: reproduces itself, unquestioned</li>
+          <li>Result: a compiled binary</li>
+        </ul>
+      </div>
+      <div class="card open">
+        <h4>Ukubona · open</h4>
+        <ul>
+          <li>Provenance: immutable graph</li>
+          <li>Alternatives: append-only graveyard</li>
+          <li>Mutation source: standing inlet, adversarial inputs welcome</li>
+          <li>Filter: versioned and auditable</li>
+          <li>Result: a succession loop kept open</li>
+        </ul>
+      </div>
+    </div>
+    <figcaption><b>Added · Fig. 6</b>The Olympian trap and its antidote, side by side, using the three failure modes and three safeguards listed above.</figcaption>
+  </figure>
+
+  <!-- ===================================================== SYNTHESIS (added) -->
+  <h2 id="synthesis">Added · Synthesis</h2>
+  <span class="attrib">Supplementary — not part of the source text</span>
+
+  <p>One table lines the three voices up against the pentad. Each cell restates a point already made above; the final column is the record field that would make the stage auditable in an append-only log (field names illustrative).</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr><th>Stage</th><th>GPT · Hesiod</th><th>Claude · reading</th><th>Gemini · control view</th><th>Record field</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>I. Principle / Engine</td><td>Generative cosmic powers</td><td>Gaia, the constant principal behind every coup</td><td>Stochastic environment; raw reservoir of variation</td><td><code>principal</code>, <code>principle_v</code></td></tr>
+        <tr><td>II. Broker / Sample</td><td>Genealogy, prophecy, inherited knowledge</td><td>The Muses, daughters of Zeus: the record is written by the winner's lineage</td><td>Sanitization of provenance</td><td><code>broker</code></td></tr>
+        <tr><td>III. Agent / Variation</td><td>Offspring who can become successors</td><td>Rotating agents; Dionysus as reopened heir (Orphic)</td><td>The actors inside the executive loop</td><td><code>agent</code>, <code>variant</code></td></tr>
+        <tr><td>IV. Collision</td><td>Father, mother, child, rival powers</td><td>Thetis: the filter acting on reproduction</td><td>Out-of-distribution pressure on the incumbent policy</td><td><code>collision</code>, <code>excluded</code></td></tr>
+        <tr><td>V. Filter</td><td>Zeus's consolidation of sovereignty</td><td>Settlement absorbs the mutation source (Metis, Themis)</td><td>The compiled binary; the closed control plane</td><td><code>filter_v</code>, <code>selected</code></td></tr>
+        <tr><td>I′. Next engine</td><td>Olympian order, authority reproduced</td><td>Titanic substrate persists under the Apollonian veil</td><td>A standing mutation inlet keeps the loop open</td><td><code>parent_id</code>, <code>gen</code> + 1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Source: <code>index.md</code> · GPT, Claude and Gemini texts reproduced as written, with figures and tables marked “Added.” The page's MathJax snippet and usage comments are carried over from the head of the source file.
+  </footer>
+
+</main>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+
+    // light / dark toggle
+    document.getElementById('theme').addEventListener('click', function () {
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('ukb-theme', next); } catch (e) {}
+    });
+
+    // app-waffle popover
+    var btn = document.getElementById('waffle');
+    var menu = document.getElementById('waffle-menu');
+    function setOpen(open) {
+      menu.hidden = !open;
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    btn.addEventListener('click', function (e) { e.stopPropagation(); setOpen(menu.hidden); });
+    document.addEventListener('click', function (e) {
+      if (!menu.hidden && !menu.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !menu.hidden) { setOpen(false); btn.focus(); }
+    });
+  })();
+</script>
+
+</body>
+</html>
