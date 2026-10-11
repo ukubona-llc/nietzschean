@@ -266,6 +266,7 @@
         <a href="#musk"><span class="tile">M</span>Elon Musk</a>
         <a href="#hermeneutics"><span class="tile">E/H</span>Epistemology vs Hermeneutics</a>
         <a href="#stipulation"><span class="tile">ds²</span>Stipulation of Meaning</a>
+        <a href="#graveyard"><span class="tile">†</span>Graveyard</a>
         <div class="grp">Ukubona apps</div>
         <!-- Edit hrefs here. Only the first two are known URLs; the rest are placeholders. -->
         <a href="https://ukubona-llc.github.io/"><span class="tile">U</span>Ukubona</a>
@@ -300,7 +301,7 @@
   <div class="provenance">
     <strong>Provenance.</strong> The text below is transcribed verbatim from <code>index.md</code>, attributed to its three voices:
     <strong>§1 GPT</strong> (including the intervening prompt from Ukubona), <strong>§2 Claude</strong>, <strong>§3 Gemini</strong>.
-    Items marked <span class="addedtag">Added</span> (figures, tables, the Synthesis, and the Hermes, Elon Musk, Epistemology vs Hermeneutics, and Stipulation of Meaning sections) are supplementary and are not part of the source text.
+    Items marked <span class="addedtag">Added</span> (figures, tables, the Synthesis, and the Hermes, Elon Musk, Epistemology vs Hermeneutics, Stipulation of Meaning, and Graveyard sections) are supplementary and are not part of the source text.
     The inline source chips are kept as they appeared in the GPT text.
   </div>
 
@@ -1003,8 +1004,96 @@
 
   <p class="provenance">Two cautions. First, this is the 1923 Einstein. As I recall, his 1933 Herbert Spencer lecture describes concepts as free creations of the mind, which sits uneasily with strict operationalism, so check before citing. Second, “Falsifiability” is Popper's word (1934), applied here to Einstein as a later reading. Einstein writes of agreement with experience.</p>
 
+  <!-- ===================================================== GRAVEYARD (added) -->
+  <h2 id="graveyard">Added · Graveyard</h2>
+  <span class="attrib">Ambition and status: Ukubona · tabulation and open points: Claude · supplementary</span>
+
+  <h3>The ambition</h3>
+  <p>An append-only graveyard: one place where anything that dies (a product, a hypothesis, a pilot, a concept) is written down at the moment it dies, together with how it died. It would be the first app on the bootstrap, and the logging primitive every later app inherits. The page's own argument is why: the Olympian trap is a system with no graveyard, so the winner's account is the only account.</p>
+
+  <p class="tablecap"><b>Added · Table H</b>Status, as reported by Ukubona on 11 October 2026</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Item</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>bootstrap-05</td><td>Live at <a href="https://bootstrap-05.onrender.com/">bootstrap-05.onrender.com</a>, with a backend behind it</td></tr>
+        <tr><td>bootstrap-06</td><td>Holds the engine, which is still being completed</td></tr>
+        <tr><td>Graveyard app</td><td>Proposed as the first app built on that engine</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Why it goes first</h3>
+  <ul>
+    <li><strong>Generic content.</strong> The bootstrap's own rule is to prove the plumbing on client-neutral content before anything personal touches it. A graveyard is client-neutral.</li>
+    <li><strong>Every app needs a V stage.</strong> Each branch eventually has to say what died and why. Building that once, in the trunk, means no branch reinvents it.</li>
+    <li><strong>It enforces the Popper turn.</strong> The record starts with a kill criterion written before the test, so shipping more means learning more, not just producing more noise.</li>
+  </ul>
+
+  <p class="tablecap"><b>Added · Table I</b>The graveyard app as a pentad (proposed)</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Stage</th><th>Function in the app</th><th>Illustrative fields</th></tr></thead>
+      <tbody>
+        <tr><td>I</td><td>What was tried: the raw event, entered from the UI</td><td><code>subject</code>, <code>occurred_at</code></td></tr>
+        <tr><td>II</td><td>The claim and its kill criterion, stated before the test</td><td><code>claim</code>, <code>kill_criterion</code></td></tr>
+        <tr><td>III</td><td>Classification: how it died, or whether it lived</td><td><code>died_by</code>: inadmissible, falsified, demoted-to-limit, survived</td></tr>
+        <tr><td>IV</td><td>The collision that decided it: market, evidence, customer, regulator</td><td><code>evidence_ref</code></td></tr>
+        <tr><td>V</td><td>The burial: one appended line, never edited</td><td><code>event_id</code>, <code>filter_v</code>, <code>selected</code></td></tr>
+        <tr><td>I′</td><td>Read before you build: the next idea starts by querying the graveyard</td><td><code>parent_id</code>, <code>supersedes</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Wiring: the UI never talks to GitHub</h3>
+  <figure>
+    <svg viewBox="0 0 560 150" role="img" aria-label="Browser UI sends a JWT to the backend on Render, which holds the PAT and appends to a private NDJSON data repo on GitHub.">
+      <defs>
+        <marker id="ah6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0L10 5L0 10z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+      <g text-anchor="middle">
+        <rect x="10" y="40" width="150" height="76" rx="12" class="box"/>
+        <text x="85" y="68" class="t-b">Browser UI</text>
+        <text x="85" y="86" class="t-m">form: bury / survive</text>
+        <text x="85" y="100" class="t-m">holds a JWT only</text>
+
+        <rect x="205" y="40" width="150" height="76" rx="12" class="boxA"/>
+        <text x="280" y="68" class="t-b">Backend (Render)</text>
+        <text x="280" y="86" class="t-m">checks JWT + role</text>
+        <text x="280" y="100" class="t-m">holds the PAT</text>
+
+        <rect x="400" y="40" width="150" height="76" rx="12" class="box"/>
+        <text x="475" y="68" class="t-b">Data repo (GitHub)</text>
+        <text x="475" y="86" class="t-m">private · NDJSON</text>
+        <text x="475" y="100" class="t-m">append-only</text>
+
+        <text x="182" y="62" class="t-a">JWT</text>
+        <text x="377" y="62" class="t-a">PAT</text>
+      </g>
+      <path d="M162 78H203" class="amber" stroke-width="1.8" marker-end="url(#ah6)"/>
+      <path d="M357 78H398" class="amber" stroke-width="1.8" marker-end="url(#ah6)"/>
+    </svg>
+    <figcaption><b>Added · Fig. 9</b>“Dump straight from the UI” works as a user experience and not as a wiring: the PAT stays on the backend, and the UI's only credential is a token.</figcaption>
+  </figure>
+
+  <figure>
+    <pre><code>{"event_id":"2026-10-11-01","occurred_at":"2026-10-11T08:00:00-04:00","actor_id":"ukubona","type":"kill_criterion_set","subject":"example-pilot","claim":"clients can assign observable value to the offer without ambiguity","kill_criterion":"fewer than 2 of 10 prospects can name a measurable result in 30 days"}
+{"event_id":"2026-10-11-02","occurred_at":"2026-11-10T08:00:00-05:00","actor_id":"ukubona","type":"buried","subject":"example-pilot","stage":"III","died_by":"inadmissible","evidence_ref":"notes/2026-11-10","filter_v":"stipulation-1","supersedes":null}</code></pre>
+    <figcaption><b>Added · Fig. 10</b>An illustrative pair of lines (not real data). The event ID follows the <code>YYYY-MM-DD-XX</code> idea from the bootstrap's own notes. A correction is a new line pointing at the old one through <code>supersedes</code>. Field names are a sketch.</figcaption>
+  </figure>
+
+  <h3>Open points to settle before building</h3>
+  <ol>
+    <li><strong>Append-only versus deletion.</strong> Git history is permanent. For Ukubona's own products that is fine, but any free text about a person must go in a purge-able file and be referenced by ID, as the bootstrap already requires for client apps.</li>
+    <li><strong>Public page, private ledger.</strong> This page is public. The data repo should be private, and nothing from the ledger should be published here without a deliberate decision.</li>
+    <li><strong>Where the graveyard sits in the pentad.</strong> This page's Einstein table puts it at V. The older tree page puts “Trial &amp; Error… and Graveyard” at II.5. Proposed reading: the trial is logged at II.5 (the kill criterion) and the burial at V (the result). Confirm or reject.</li>
+    <li><strong>Which engine features it needs.</strong> The graveyard only needs authenticated append and a read-back view. It does not need the roles or the grant events a client app would, so it can be the thinnest first test of the engine.</li>
+  </ol>
+
   <footer>
-    Source: <code>index.md</code> · GPT, Claude and Gemini texts reproduced as written, with figures, tables and the Hermes, Elon Musk, Epistemology vs Hermeneutics, and Stipulation of Meaning sections marked “Added.” The page's MathJax snippet and usage comments are carried over from the head of the source file.
+    Source: <code>index.md</code> · GPT, Claude and Gemini texts reproduced as written, with figures, tables and the Hermes, Elon Musk, Epistemology vs Hermeneutics, Stipulation of Meaning, and Graveyard sections marked “Added.” The page's MathJax snippet and usage comments are carried over from the head of the source file.
   </footer>
 
 </main>
