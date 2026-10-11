@@ -265,6 +265,7 @@
         <a href="#hermes"><span class="tile">H</span>Hermes</a>
         <a href="#musk"><span class="tile">M</span>Elon Musk</a>
         <a href="#hermeneutics"><span class="tile">E/H</span>Epistemology vs Hermeneutics</a>
+        <a href="#stipulation"><span class="tile">ds²</span>Stipulation of Meaning</a>
         <div class="grp">Ukubona apps</div>
         <!-- Edit hrefs here. Only the first two are known URLs; the rest are placeholders. -->
         <a href="https://ukubona-llc.github.io/"><span class="tile">U</span>Ukubona</a>
@@ -299,7 +300,7 @@
   <div class="provenance">
     <strong>Provenance.</strong> The text below is transcribed verbatim from <code>index.md</code>, attributed to its three voices:
     <strong>§1 GPT</strong> (including the intervening prompt from Ukubona), <strong>§2 Claude</strong>, <strong>§3 Gemini</strong>.
-    Items marked <span class="addedtag">Added</span> (figures, tables, the Synthesis, and the Hermes, Elon Musk, and Epistemology vs Hermeneutics sections) are supplementary and are not part of the source text.
+    Items marked <span class="addedtag">Added</span> (figures, tables, the Synthesis, and the Hermes, Elon Musk, Epistemology vs Hermeneutics, and Stipulation of Meaning sections) are supplementary and are not part of the source text.
     The inline source chips are kept as they appeared in the GPT text.
   </div>
 
@@ -956,8 +957,54 @@
 
   <p class="provenance">Dates and titles here are from standard reference knowledge and I haven't checked them against sources, so verify before citing. The stage placements are an interpretive reading, not a scholarly consensus.</p>
 
+  <!-- ===================================================== STIPULATION OF MEANING (added) -->
+  <h2 id="stipulation">Added · Stipulation of Meaning</h2>
+  <span class="attrib">Pentad: Ukubona · tabulation and commentary: Claude · supplementary</span>
+
+  <p>Source: Einstein, “Fundamental ideas and problems of the theory of relativity,” lecture to the Nordic Assembly of Naturalists, Gothenburg, 11 July 1923 (printed with the Nobel lectures, though a footnote says it was not the Nobel lecture itself). Its first paragraph names two aspects of the theory: the physical question of whether Nature has preferred states of motion, and a stipulation that concepts and distinctions are admissible only if observable facts can be assigned to them without ambiguity. Einstein places that second postulate in epistemology.</p>
+
+  <p class="tablecap"><b>Added · Table G</b>Einstein's lecture as a pentad, with the graveyard</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Stage</th><th>Label</th><th>Anchor in the lecture</th><th>What the graveyard receives</th></tr></thead>
+      <tbody>
+        <tr><td>I</td><td>Unambiguously observed</td><td>Observable facts, reached through “practically rigid” bodies and identical clocks</td><td>Readings that no admissible concept can yet absorb: parked, not killed</td></tr>
+        <tr><td>II</td><td>Concepts &amp; distinctions</td><td>Inertial frame, absolute time, preferred states of motion, the rigid body, Euclidean validity</td><td>Candidates only: nothing is buried here</td></tr>
+        <tr><td>III</td><td>Admissibility</td><td>The stipulation of meaning: can observables be assigned to the concept without ambiguity?</td><td><strong>First entrance.</strong> Concepts die by inadmissibility. On my reading, absolute time is the clear case: it is abandoned to reconcile the relativity and light principles, and its replacement is defined through the stipulation. The inertial frame is flagged weak (no experimental criterion for “force-free”)</td></tr>
+        <tr><td>IV</td><td>Falsifiability</td><td>Mercury's perihelion, the deflection of light by the sun, the red shift, with Einstein's own footnote that the red-shift agreement is not yet completely assured</td><td><strong>Second entrance.</strong> Hypotheses die by failing a test. The lecture lists tests passed, not kills, and leaves one test open</td></tr>
+        <tr><td>V</td><td>Graveyard &amp; survival</td><td>Dropped: absolute time, privileged inertial frames, Euclidean validity for finite regions. Kept: Newtonian gravity as a first approximation</td><td>Survivors, plus the <strong>demoted</strong>: superseded laws retained as limiting cases</td></tr>
+        <tr><td>I′</td><td>Next generation</td><td>Closing lines: even if the quantum problem changes the equations, the relativity principle is not given up and earlier laws survive as limiting laws</td><td>The graveyard is queryable because the dead theory sits inside its successor as a special case</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>The graveyard has two entrances (and a side door)</h3>
+  <p>A sequence read as III → IV → V hides that III can send a concept straight to V without any experiment, and that a surviving theory can be kept in demoted form. A record that only logs “falsified” loses the first and misreads the second. That suggests tagging each burial: <code>inadmissible</code>, <code>falsified</code>, <code>demoted-to-limit</code> or <code>survived</code> (illustrative values).</p>
+
+  <figure>
+    <pre><code>{"gen":1,"concept":"absolute-time","admissible":false,"died_by":"inadmissible","replaced_by":"frame-time-via-light-principle","filter_v":"stipulation-1"}
+{"gen":1,"concept":"newtonian-gravity","admissible":true,"status":"demoted-to-limit","survives_as":"first-approximation","filter_v":"stipulation-1"}
+{"gen":2,"concept":"cosmological-term","admissible":"debt","note":"no experimental basis","filter_v":"stipulation-1"}</code></pre>
+    <figcaption><b>Added · Fig. 8</b>An illustrative append-only record in the style of Fig. 5. The classifications are my reading of the lecture, and the field names are a sketch, not a spec.</figcaption>
+  </figure>
+
+  <h3>Why “without ambiguity” carries the recursion</h3>
+  <p>V → I′ means the next generation starts from a changed engine. To say it changed for the better or the worse, I has to be comparable across generations. If observables were assigned to concepts ambiguously, any difference between I and I′ could be drift in the readings as easily as change in the world, and “improve or deteriorate” would have no meaning. The stipulation is what makes the recursion evaluable.</p>
+  <p>The comparability is of <em>assignments</em>, not of raw observation, and the assignment can itself shift between generations. I recall (from memory, so check it) that Einstein told Heisenberg that theory decides what can be observed. If so, the stipulation has to be re-run each cycle, which is why the record carries a filter version.</p>
+
+  <h3>Open debts, in the lecture's own terms</h3>
+  <ul>
+    <li><strong>The rigid body.</strong> Einstein says it is only approximately realized in Nature, so his own instruments fail the strict test, and he says the logically purer method would apply the stipulation to the whole set of laws first.</li>
+    <li><strong>The inertial frame.</strong> It is defined by force-free motion, yet there is no experimental criterion for force-free. That circularity is what leads on to general relativity.</li>
+    <li><strong>The cosmological term.</strong> Needed to satisfy Mach's postulate, it has no experimental basis and is not fixed by the other terms.</li>
+    <li><strong>Unified field theory.</strong> The affine-connection approach relies on mathematical simplicity, which Einstein says is not free from arbitrariness. He doubts it is an enrichment without new physical connections.</li>
+  </ul>
+  <p>Writing the debts into the record is the provenance principle applied to physics: the theory states what it has not yet earned.</p>
+
+  <p class="provenance">Two cautions. First, this is the 1923 Einstein. As I recall, his 1933 Herbert Spencer lecture describes concepts as free creations of the mind, which sits uneasily with strict operationalism, so check before citing. Second, “Falsifiability” is Popper's word (1934), applied here to Einstein as a later reading. Einstein writes of agreement with experience.</p>
+
   <footer>
-    Source: <code>index.md</code> · GPT, Claude and Gemini texts reproduced as written, with figures, tables and the Hermes, Elon Musk, and Epistemology vs Hermeneutics sections marked “Added.” The page's MathJax snippet and usage comments are carried over from the head of the source file.
+    Source: <code>index.md</code> · GPT, Claude and Gemini texts reproduced as written, with figures, tables and the Hermes, Elon Musk, Epistemology vs Hermeneutics, and Stipulation of Meaning sections marked “Added.” The page's MathJax snippet and usage comments are carried over from the head of the source file.
   </footer>
 
 </main>
