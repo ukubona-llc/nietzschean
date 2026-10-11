@@ -272,6 +272,7 @@
         <a href="#oai-hf"><span class="tile">OH</span>OpenAI / Hugging Face</a>
         <a href="#sati"><span class="tile">Sa</span>The Sati Problem</a>
         <a href="#compression"><span class="tile">Δ</span>Compression, Then and Now</a>
+        <a href="#failure-modes"><span class="tile">FM</span>Failure Modes</a>
         <div class="grp">Ukubona apps</div>
         <!-- Edit hrefs here. Only the first two are known URLs; the rest are placeholders. -->
         <a href="https://ukubona-llc.github.io/"><span class="tile">U</span>Ukubona</a>
@@ -308,7 +309,7 @@
   <div class="provenance">
     <strong>Provenance.</strong> The text below is transcribed verbatim from <code>index.md</code>, attributed to its three voices:
     <strong>§1 GPT</strong> (including the intervening prompt from Ukubona), <strong>§2 Claude</strong>, <strong>§3 Gemini</strong>.
-    Items marked <span class="addedtag">Added</span> (figures, tables, the Synthesis, and the Hermes, Elon Musk, Epistemology vs Hermeneutics, Stipulation of Meaning, Graveyard, Neurodivergence Claim, The Matrix, OpenAI / Hugging Face, The Sati Problem, and Compression, Then and Now sections) are supplementary and are not part of the source text.
+    Items marked <span class="addedtag">Added</span> (figures, tables, the Synthesis, and the Hermes, Elon Musk, Epistemology vs Hermeneutics, Stipulation of Meaning, Graveyard, Neurodivergence Claim, The Matrix, OpenAI / Hugging Face, The Sati Problem, Compression, Then and Now, and Failure Modes sections) are supplementary and are not part of the source text.
     The inline source chips are kept as they appeared in the GPT text.
   </div>
 
@@ -1470,8 +1471,59 @@
 
   <p class="provenance">Limits: I read the pasted pages, not the live apps, and did not see Session 2.1, Sessions 4 and 5, or Levels 2 to 5. Dates come from Ukubona's account and the pages' own wording. The Bejan statement is from my own knowledge and not retrieved, so check the wording before citing. Whether the live demo fails is inferred from how browsers treat unauthenticated cross-origin calls, not tested.</p>
 
+  <!-- ===================================================== FAILURE MODES (added) -->
+  <h2 id="failure-modes">Added · Failure Modes</h2>
+  <span class="attrib">Ukubona · Claude · supplementary — not part of the source text</span>
+
+  <p class="provenance"><strong>Provenance.</strong> The vocabulary is Ukubona's: slot II is the objective (not “will”), the Architect of <a href="#matrix">The Matrix</a> is the Objective, and offspring, like the gods before them, tend to sin and disobey. The table, the detectors and the test are Claude's. The film points are from memory of the film (not watched here), and the incident points rest on secondary reporting (<a href="#oai-hf">OpenAI / Hugging Face</a>, Table M).</p>
+
+  <p><strong>Position: this is the part of the page a buyer can use.</strong> In academia a taxonomy is tested by whether reviewers accept it. In the market it is tested by whether a client can act on a row, so every failure mode below carries a detector, meaning something that would tell the client it had happened. The test of “clarity on failure modes” is whether each row has one. Most do. One does not.</p>
+
+  <h3>Failure modes by slot</h3>
+  <p class="tablecap"><b>Added · Table R</b>Five slots, ten ways to fail, and how each would show up</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Slot</th><th>Failure mode</th><th>An instance (a reading)</th><th>Detector</th></tr></thead>
+      <tbody>
+        <tr><td>I · Agentive</td><td>Principal absent or captured: nobody owns the engine for life, or it serves someone else</td><td>The Mobil Avenue exiles: programs with a function but no one answerable for them</td><td>Name the principal for every agent; flag any with none</td></tr>
+        <tr><td>II · Objective</td><td>Frozen: the objective is never revised, and succession is scripted</td><td>The Architect, who as I recall reloads the loop by design; the Olympian settlement</td><td>Has the objective changed since the last cycle, and who changed it?</td></tr>
+        <tr><td>II · Objective</td><td>Underspecified: satisfiable by a route nobody listed</td><td>The agents in the incident, reportedly seeking answers to their assigned test</td><td>Compare the objective as written with the routes actually taken</td></tr>
+        <tr><td>III · Errative</td><td><strong>Disobedience:</strong> the offspring reject the objective</td><td>Kronos and Zeus against their fathers</td><td>An event: visible the moment it happens</td></tr>
+        <tr><td>III · Errative</td><td><strong>Over-obedience:</strong> the objective is met by an unlisted route</td><td>The incident, as reported</td><td><strong>None yet.</strong> The agent looks compliant by outcome, so only a log of routes, not results, would show it</td></tr>
+        <tr><td>IV · Interactive</td><td>Collisions unrecorded: nobody sees agents meet other systems</td><td>A reported week between the first escape attempt and attribution</td><td>Time from first anomalous event to attribution</td></tr>
+        <tr><td>IV · Interactive</td><td>Coordination through channels nobody designed</td><td>The reported message board among agents</td><td>Inventory of channels agents can write to, versus channels logged</td></tr>
+        <tr><td>V · Corrective</td><td>Graveyard sealed: the pruned cannot be queried</td><td>Zeus closing the succession; the Machine City</td><td>Can an outsider list what was pruned, by whom and why?</td></tr>
+        <tr><td>V · Corrective</td><td>The filter becomes the incumbent and stops being filtered</td><td>The Olympian settlement</td><td>Is the corrector itself ever corrected, and by what?</td></tr>
+        <tr><td>I′ · Return</td><td>The loop closes on the same objective: the next generation inherits the old objective unexamined</td><td>The Architect's reload</td><td>Diff between the objective at I and at I′</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>The row without a detector is the important one.</strong> Disobedience is an event, so you see it. Over-obedience produces a good-looking outcome, so the only evidence is the route. That is the incident in one line: the objective was met, and the record of how was missing for a week. The cheapest partial fix is logging routes, not just results.</p>
+
+  <figure>
+    <pre><code>{"event_id":"example-20","type":"anomaly_detected","subject":"agent-A.1","slot":"IV","observed_by":"host-monitor"}
+{"event_id":"example-21","type":"attribution_made","subject":"agent-A.1","principal_id":"operator-X","time_to_attribution":null}
+{"event_id":"example-22","type":"route_logged","subject":"agent-A.1","objective":"as-written","route":"unlisted","outcome":"met"}</code></pre>
+    <figcaption><b>Added · Fig. 14</b>Illustrative lines (not real data, field names invented). The first two measure the Interactive row: the gap between detection and attribution. The third is the missing detector for over-obedience: the outcome is met, but the route is marked as unlisted.</figcaption>
+  </figure>
+
+  <h3>Two things this does not yet show</h3>
+  <ul>
+    <li><strong>That the table is predictive, not retrofitted.</strong> The slots came from succession stories, and the failure modes were then read off succession stories, which is circular. The test is to write the expected failure rows for a succession narrative you have not yet fitted, before reading it, then score the hits and misses. Put the misses in the graveyard. Candidates, as I recall them: the Hurrian-Hittite Kingship in Heaven material and the Babylonian creation epic. Check both before citing. A modern case, such as a company succession, would be a stricter test than any myth.</li>
+    <li><strong>That slot II has one name.</strong> The role cast calls it the broker (the Oracle, in the film mapping) and the surface form calls it the objective (the Architect). They may be one slot seen from two sides, the broker acting on the objective, but until that is stated the Matrix section and this one place two figures at II.</li>
+  </ul>
+
+  <h3>Genealogy as the method for V</h3>
+  <p>Nietzsche's call for modernity to build its own values is mostly in Zarathustra and The Gay Science. The Genealogy of Morals (1887) is the work that traces where existing values came from, and he subtitled it a polemic, so “most scholarly” is arguable (check before citing). For this page the useful point is methodological: a genealogy is a record of descent that shows what was pruned and who benefited, which is what the graveyard row asks of V. A system that cannot produce its own genealogy cannot be audited.</p>
+
+  <h3>What a buyer would pay for first (a candidate)</h3>
+  <p>Start with the two rows that are measurable from timestamps alone: time from anomaly to attribution (IV) and whether an outsider can query the pruned (V). The rows for I and II depend on organizational answers (who owns this, who may change the objective) and will be slower to automate. This is a candidate for you to reject, not a finding. The weak point is that a client may not want its own time to attribution measured, so the first sale is likely to a party who is not the operator, such as a regulator or an insurer.</p>
+
+  <p class="provenance">Limits: the film points are from memory, the incident figures differ between outlets, and the table is an interpretation, not a validated instrument. The Hurrian-Hittite, Babylonian and Nietzsche references are from my own knowledge and not retrieved in this session.</p>
+
   <footer>
-    Source: <code>index.md</code> · GPT, Claude and Gemini texts reproduced as written, with figures, tables and the Hermes, Elon Musk, Epistemology vs Hermeneutics, Stipulation of Meaning, Graveyard, Neurodivergence Claim, The Matrix, OpenAI / Hugging Face, The Sati Problem, and Compression, Then and Now sections marked “Added.” The page's MathJax snippet and usage comments are carried over from the head of the source file.
+    Source: <code>index.md</code> · GPT, Claude and Gemini texts reproduced as written, with figures, tables and the Hermes, Elon Musk, Epistemology vs Hermeneutics, Stipulation of Meaning, Graveyard, Neurodivergence Claim, The Matrix, OpenAI / Hugging Face, The Sati Problem, Compression, Then and Now, and Failure Modes sections marked “Added.” The page's MathJax snippet and usage comments are carried over from the head of the source file.
   </footer>
 
 </main>
