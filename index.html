@@ -115,13 +115,18 @@
   .waffle-dots i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; display: block; }
   .waffle-menu {
     position: absolute; right: 0; top: 48px;
-    width: 280px; padding: 12px;
+    width: min(320px, calc(100vw - 24px)); max-height: calc(100vh - 80px); overflow-y: auto; padding: 12px;
     background: var(--surface);
     border: 1px solid var(--rule); border-radius: 14px;
     box-shadow: var(--shadow);
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
   }
   .waffle-menu[hidden] { display: none; }
+  .waffle-menu .grp {
+    grid-column: 1 / -1; padding: 6px 6px 2px;
+    font: 500 .68rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+  }
+  .waffle-menu .grp:not(:first-child) { margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
   .waffle-menu a {
     display: flex; flex-direction: column; align-items: center; gap: 6px;
     padding: 10px 4px; border-radius: 10px;
@@ -140,7 +145,7 @@
   main { max-width: 46rem; margin: 0 auto; padding: 92px 22px 96px; }
   h1, h2 { font-family: var(--serif); font-weight: 400; line-height: 1.15; }
   h1 { font-size: clamp(2.1rem, 6vw, 3rem); margin: 0 0 .3em; }
-  h2 { font-size: 1.9rem; margin: 2.4em 0 .6em; padding-top: .6em; border-top: 1px solid var(--rule); }
+  h2 { scroll-margin-top: 72px; font-size: 1.9rem; margin: 2.4em 0 .6em; padding-top: .6em; border-top: 1px solid var(--rule); }
   h3 { font: 700 1.1rem/1.35 var(--sans); margin: 2em 0 .5em; }
   p { margin: 0 0 1em; }
   a { color: var(--accent); }
@@ -251,11 +256,19 @@
       <button class="iconbtn" id="waffle" type="button" aria-label="Apps" aria-haspopup="true" aria-expanded="false" aria-controls="waffle-menu">
         <span class="waffle-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
       </button>
-      <nav class="waffle-menu" id="waffle-menu" aria-label="Ukubona apps" hidden>
+      <nav class="waffle-menu" id="waffle-menu" aria-label="Page sections and Ukubona apps" hidden>
+        <div class="grp">On this page</div>
+        <a href="#gpt"><span class="tile">1</span>GPT</a>
+        <a href="#claude"><span class="tile">2</span>Claude</a>
+        <a href="#gemini"><span class="tile">3</span>Gemini</a>
+        <a href="#synthesis"><span class="tile">Σ</span>Synthesis</a>
+        <a href="#hermes"><span class="tile">H</span>Hermes</a>
+        <a href="#musk"><span class="tile">M</span>Elon Musk</a>
+        <a href="#hermeneutics"><span class="tile">E/H</span>Epistemology vs Hermeneutics</a>
+        <div class="grp">Ukubona apps</div>
         <!-- Edit hrefs here. Only the first two are known URLs; the rest are placeholders. -->
         <a href="https://ukubona-llc.github.io/"><span class="tile">U</span>Ukubona</a>
         <a href="https://ukubona-llc.github.io/self-criticism/"><span class="tile">H</span>Hellenism &amp; Pessimism</a>
-        <a href="#top"><span class="tile">V</span>This page</a>
         <a href="#"><span class="tile">C</span>Clinical Twin</a>
         <a href="#"><span class="tile">W</span>Waste Twin</a>
         <a href="#"><span class="tile">S</span>Dr. K's School</a>
@@ -286,18 +299,9 @@
   <div class="provenance">
     <strong>Provenance.</strong> The text below is transcribed verbatim from <code>index.md</code>, attributed to its three voices:
     <strong>§1 GPT</strong> (including the intervening prompt from Ukubona), <strong>§2 Claude</strong>, <strong>§3 Gemini</strong>.
-    Items marked <span class="addedtag">Added</span> (figures, tables, the Synthesis, and the Hermes and Elon Musk sections) are supplementary and are not part of the source text.
+    Items marked <span class="addedtag">Added</span> (figures, tables, the Synthesis, and the Hermes, Elon Musk, and Epistemology vs Hermeneutics sections) are supplementary and are not part of the source text.
     The inline source chips are kept as they appeared in the GPT text.
   </div>
-
-  <ul class="toc">
-    <li><a href="#gpt">1 · GPT</a></li>
-    <li><a href="#claude">2 · Claude</a></li>
-    <li><a href="#gemini">3 · Gemini</a></li>
-    <li><a href="#synthesis">Added · Synthesis</a></li>
-    <li><a href="#hermes">Added · Hermes</a></li>
-    <li><a href="#musk">Added · Elon Musk</a></li>
-  </ul>
 
   <!-- ===================================================== 1. GPT -->
   <h2 id="gpt">1. GPT</h2>
@@ -832,8 +836,128 @@
 
   <p><strong>The testable form for Ukubona.</strong> The broker field earns its keep here: log each public claim with its date, its stated engine capability, and a later reconciliation against what shipped. A courier-versus-trickster tag per broker record keeps the two Hermes modes apart, and a broker's holdings in the filter (what it owns that selects) become a field in their own right.</p>
 
+  <!-- ===================================================== EPISTEMOLOGY vs HERMENEUTICS (added) -->
+  <h2 id="hermeneutics">Added · Epistemology vs Hermeneutics</h2>
+  <span class="attrib">Claude · supplementary — not part of the source text</span>
+
+  <h3>The distinction</h3>
+  <p>Epistemology asks what it takes to know: what justifies a claim, and what separates knowledge from mere belief. Hermeneutics asks how meaning gets across (from a mind to a text, a text to a reader, one era to another) and what must already be in place for anyone to understand anything. In the pentad both start at the same stage, II, the sample (claims, texts, utterances). They part ways on direction.</p>
+
+  <p class="tablecap"><b>Added · Table D</b>Same stage, opposite directions</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>Epistemology</th><th>Hermeneutics</th></tr></thead>
+      <tbody>
+        <tr><td>Guiding question</td><td>What justifies a claim to know?</td><td>What does this mean, and how is understanding possible?</td></tr>
+        <tr><td>Unit</td><td>Proposition, belief, hypothesis</td><td>Text, utterance, expression, act</td></tr>
+        <tr><td>Direction in the pentad</td><td>Forward: II → V. Does the sample survive the filter?</td><td>Backward: II → I. What generated the sample? Later also reflexive: V → I′, where the reader's own inheritance enters.</td></tr>
+        <tr><td>Success</td><td>Truth, justification, evidence</td><td>Understanding, a fusion of horizons, a defensible reading</td></tr>
+        <tr><td>Failure</td><td>Unjustified or false belief</td><td>Misunderstanding, or closure: the reader's frame imposed on the text</td></tr>
+        <tr><td>Paradigm</td><td>Natural science (explaining, <em>Erklären</em>)</td><td>The human sciences (understanding, <em>Verstehen</em>)</td></tr>
+        <tr><td>Stance to authority</td><td>Audits it</td><td>Inherits it (Gadamer) or suspects it (Ricoeur)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>One way to say it: epistemology asks whether the filter passes the claim, and hermeneutics asks where the filter, and the reader holding it, came from. Both are theories of the filter, from opposite sides.</p>
+
+  <h3>Hermes and the word</h3>
+  <p>The Greek <em>hermēneia</em> (interpretation, expression) and <em>hermēneus</em> (interpreter) were tied to Hermes in antiquity; Plato plays on the link in the <em>Cratylus</em> (around 407e–408b). Modern linguists regard the actual origin of the god's name as uncertain, so the connection is a classical association, not a settled etymology. The word enters the history of philosophy through language: Aristotle's <em>Peri hermēneias</em> (<em>De Interpretatione</em>) is a treatise on statements, which makes it a work about the sample. Plato's <em>Ion</em> (534e–535a) gives the broker chain explicitly: poets are interpreters of the gods, and the rhapsodes are interpreters of the poets. Epistemology, by contrast, gets its name late: James Frederick Ferrier coined “epistemology” in <em>Institutes of Metaphysic</em> (1854), though the questions go back to Plato's <em>Theaetetus</em>.</p>
+
+  <h3>Hermeneutics began at II and moved</h3>
+  <p>Historically the discipline starts as craft on the sample, the exegesis of Homer, Scripture and law, and only later reaches for the engine. That is the correction I'd make to reading its origin as Stage I: your Stage I (philosophy, theology) is what hermeneutics is ultimately <em>about</em>, but the field arrived there in the nineteenth century.</p>
+
+  <figure>
+    <svg viewBox="0 0 580 130" role="img" aria-label="Order in which hermeneutics arrived at the pentad's stages: II, then I, then I-prime, then IV, then V.">
+      <defs>
+        <marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0L10 5L0 10z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+      <g text-anchor="middle">
+        <text x="60" y="16" class="t-m">to c. 1800</text>
+        <rect x="10" y="24" width="100" height="92" rx="10" class="boxA"/>
+        <text x="60" y="46" class="t-a" font-size="15">II</text>
+        <text x="60" y="66" class="t-b">Exegesis</text><text x="60" y="80" class="t-m">of Homer,</text><text x="60" y="94" class="t-m">Scripture</text>
+
+        <text x="175" y="16" class="t-m">1800s</text>
+        <rect x="125" y="24" width="100" height="92" rx="10" class="box"/>
+        <text x="175" y="46" class="t-a" font-size="15">I</text>
+        <text x="175" y="66" class="t-b">Author's mind</text><text x="175" y="80" class="t-m">Schleiermacher,</text><text x="175" y="94" class="t-m">Dilthey</text>
+
+        <text x="290" y="16" class="t-m">1927</text>
+        <rect x="240" y="24" width="100" height="92" rx="10" class="box"/>
+        <text x="290" y="46" class="t-a" font-size="15">I′</text>
+        <text x="290" y="66" class="t-b">Reader as</text><text x="290" y="80" class="t-m">inherited engine</text><text x="290" y="94" class="t-m">Heidegger</text>
+
+        <text x="405" y="16" class="t-m">1960</text>
+        <rect x="355" y="24" width="100" height="92" rx="10" class="box"/>
+        <text x="405" y="46" class="t-a" font-size="15">IV</text>
+        <text x="405" y="66" class="t-b">Art, horizons</text><text x="405" y="80" class="t-m">in collision</text><text x="405" y="94" class="t-m">Gadamer</text>
+
+        <text x="520" y="16" class="t-m">1960s–70s</text>
+        <rect x="470" y="24" width="100" height="92" rx="10" class="box"/>
+        <text x="520" y="46" class="t-a" font-size="15">V</text>
+        <text x="520" y="66" class="t-b">Authority vs</text><text x="520" y="80" class="t-m">suspicion</text><text x="520" y="94" class="t-m">Ricoeur, Habermas</text>
+      </g>
+      <path d="M112 70H123" class="amber" stroke-width="1.8" marker-end="url(#ah5)"/>
+      <path d="M227 70H238" class="amber" stroke-width="1.8" marker-end="url(#ah5)"/>
+      <path d="M342 70H353" class="amber" stroke-width="1.8" marker-end="url(#ah5)"/>
+      <path d="M457 70H468" class="amber" stroke-width="1.8" marker-end="url(#ah5)"/>
+    </svg>
+    <figcaption><b>Added · Fig. 7</b>The order in which hermeneutics arrived at each stage. The pentad placements are my reading; the figures and dates are standard.</figcaption>
+  </figure>
+
+  <p class="tablecap"><b>Added · Table E</b>The path, with the figures behind each move</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Era</th><th>Figures and works</th><th>Move</th><th>Stage</th></tr></thead>
+      <tbody>
+        <tr><td>Antiquity</td><td>Plato, <em>Ion</em>; Aristotle, <em>Peri hermēneias</em>; Philo and Origen on allegorical and multi-level reading (<em>De principiis</em>, bk 4)</td><td>Craft on the sample; a broker chain from gods to poets to rhapsodes to audience</td><td>II</td></tr>
+        <tr><td>Patristic to medieval</td><td>Augustine, <em>De doctrina christiana</em>; the fourfold senses (literal, allegorical, moral, anagogical)</td><td>Rules for reading a fixed sample; signs and what they point to</td><td>II</td></tr>
+        <tr><td>Reformation</td><td>Luther; Flacius Illyricus, <em>Clavis Scripturae Sacrae</em> (1567)</td><td>Who may read Scripture, and by what rules: a dispute over the filter (church authority vs. the individual reader and the text)</td><td>II → V</td></tr>
+        <tr><td>Romanticism and historicism</td><td>Schleiermacher (1768–1834); Dilthey (1833–1911)</td><td>Reconstruct the mind behind the text. Dilthey: lived experience (<em>Erlebnis</em>) → expression (<em>Ausdruck</em>) → understanding (<em>Verstehen</em>), with <em>Verstehen</em> set against <em>Erklären</em> as the method of the human sciences</td><td>II → I</td></tr>
+        <tr><td>Existential turn</td><td>Heidegger, <em>Being and Time</em> (1927)</td><td>Understanding as a structure of existence, not a method; interpretation always starts from the reader's fore-understanding (the circle)</td><td>I′</td></tr>
+        <tr><td>Philosophical hermeneutics</td><td>Gadamer, <em>Truth and Method</em> (1960)</td><td>Begins with the experience of art, then history and language; effective history (<em>Wirkungsgeschichte</em>), fusion of horizons, rehabilitation of tradition and prejudgment</td><td>IV, then V</td></tr>
+        <tr><td>Validity vs. suspicion</td><td>Betti (1962) and Hirsch, <em>Validity in Interpretation</em> (1967); Habermas's critique of Gadamer (1967); Ricoeur, <em>Freud and Philosophy</em> (1965)</td><td>Betti and Hirsch defend the author's meaning as a control, so an epistemic norm returns. Habermas and Ricoeur ask whether tradition is distorted by power, and read Marx, Nietzsche and Freud as masters of suspicion</td><td>V (audit of the filter)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Two links to the rest of the page. First, Hermes's two modes reappear: the courier ideal (faithful transmission of meaning, Schleiermacher's reconstruction and Betti's objectivity) against the trickster mode (reading against the text, Ricoeur's suspicion). As a loose analogy, Gadamer's trust in tradition leans toward the courtier, though he would resist that description. Second, the Reformation episode is the same governance question as Stage V: who has authority over the filter.</p>
+
+  <h3>Epistemology, placed</h3>
+  <p>Epistemology takes a sample and asks whether it survives, which is why your first pentad was essentially epistemic: V was “which hypothesis survives.” Its history, by stage:</p>
+  <ul>
+    <li><strong>I.</strong> The sources of knowledge: rationalism and empiricism (Descartes, Locke), the question of what the engine behind experience is.</li>
+    <li><strong>II.</strong> The claim itself: Plato's <em>Theaetetus</em> tests knowledge as true belief with an account (<em>logos</em>) and leaves the question open.</li>
+    <li><strong>IV.</strong> Collision by counterexample: Gettier (1963) showed justified true belief can be true by luck.</li>
+    <li><strong>V.</strong> The filter made explicit: Popper's falsification (1934), and later Bayesian updating.</li>
+  </ul>
+  <p>The bridge between the two traditions is Kant (1781). The categories of the understanding are a filter built into the knower, which is a Stage V mechanism located inside the subject. Dilthey set out to write the Kantian critique for historical reason, and Heidegger and Gadamer then historicize the filter: the categories become inherited prejudgments, so the filter has a lineage. Epistemology audits the filter's validity, and hermeneutics asks where it came from.</p>
+
+  <h3>Your five labels</h3>
+  <p class="tablecap"><b>Added · Table F</b>Hermeneutics's own objects at each stage, and when the field got there</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Stage</th><th>Object (your list)</th><th>Where it shows up in the history</th></tr></thead>
+      <tbody>
+        <tr><td>I</td><td>Philosophy, theology: the engine behind experience and utterance</td><td>Implicit early (a divine author behind Scripture); explicit with Schleiermacher and Dilthey</td></tr>
+        <tr><td>II</td><td>Sample: language, constitution, Holy Writ, next-token prediction, error</td><td>From the start</td></tr>
+        <tr><td>III</td><td>Adaptation</td><td>Application (<em>Anwendung</em>): Gadamer, following the Pietist <em>subtilitas applicandi</em>, holds that applying a text to a new situation is part of understanding it</td></tr>
+        <tr><td>IV</td><td>Art</td><td>Gadamer's starting point; Ricoeur's <em>conflict of interpretations</em> (1969)</td></tr>
+        <tr><td>V</td><td>Human action or life</td><td>Dilthey's <em>Leben</em>; Heidegger on existence; Ricoeur on meaningful action read as a text (1971)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>So the same list can be read two ways: as the objects the field takes up at each stage, and as the order in which it moved among them. The second reading is what shows the recursion: life at V becomes the experience at I′ that the next interpreter starts from.</p>
+
+  <h3>The LLM case</h3>
+  <p>Next-token prediction is the broker sampling language, and error is where the sample diverges from the engine, which is how the generating principle becomes visible. The epistemic question is which outputs pass the filter (benchmarks, evidence, falsification). The hermeneutic question is what generated an output and what the reader brings to it. A system that logs only the first has outcomes without provenance, and one that logs only the second can explain itself without ever being tested, so the pentad's record needs both.</p>
+
+  <p class="provenance">Dates and titles here are from standard reference knowledge and I haven't checked them against sources, so verify before citing. The stage placements are an interpretive reading, not a scholarly consensus.</p>
+
   <footer>
-    Source: <code>index.md</code> · GPT, Claude and Gemini texts reproduced as written, with figures, tables and the Hermes and Elon Musk sections marked “Added.” The page's MathJax snippet and usage comments are carried over from the head of the source file.
+    Source: <code>index.md</code> · GPT, Claude and Gemini texts reproduced as written, with figures, tables and the Hermes, Elon Musk, and Epistemology vs Hermeneutics sections marked “Added.” The page's MathJax snippet and usage comments are carried over from the head of the source file.
   </footer>
 
 </main>
@@ -857,6 +981,7 @@
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
     btn.addEventListener('click', function (e) { e.stopPropagation(); setOpen(menu.hidden); });
+    menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setOpen(false); }); });
     document.addEventListener('click', function (e) {
       if (!menu.hidden && !menu.contains(e.target)) setOpen(false);
     });
